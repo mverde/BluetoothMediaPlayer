@@ -38,7 +38,6 @@ public class MainActivity extends ActionBarActivity {
    private Handler btHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            //Log.v("MyActivity", "I GOT TO THE MESSAGE HANDLER");
             byte[] writeBuf = (byte[]) msg.obj;
             int begin = (int)msg.arg1;
             int end = (int)msg.arg2;
@@ -228,7 +227,6 @@ public class MainActivity extends ActionBarActivity {
 
         public ConnectThread(BluetoothDevice device)
         {
-            //Log.v("MyActivity", "I GOT TO THE CONNECT CONST");
             BluetoothSocket temp = null;
             mDevice = device;
             try{
@@ -258,7 +256,6 @@ public class MainActivity extends ActionBarActivity {
 
             mConnectedThread = new ConnectedThread(mSocket);
             mConnectedThread.start();
-            //Log.v("MyActivity", "I GOT TO THE CONNECTED THREAD");
         }
 
         public void cancel()
@@ -277,7 +274,6 @@ public class MainActivity extends ActionBarActivity {
         private OutputStream mmOutStream;
 
         public ConnectedThread(BluetoothSocket socket) {
-            //Log.v("MyActivity", "I GOT TO THE CONSTRUCTOR");
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
@@ -290,27 +286,19 @@ public class MainActivity extends ActionBarActivity {
         }
 
         public void run() {
-            //Log.v("MyActivity", "I GOT TO CONNECTED RUN");
             byte[] buffer = new byte[1024];
-            //byte[] buffer = "u#".getBytes();    //temp
             int begin = 0;
-            int bytes = 0;  //temp, should be 0
+            int bytes = 0;
             int avail = 0;
             while (true) {
                 try {
-                    //Log.v("MyActivity", "I GOT TO THE LOOP");
-                    //write(new byte[] {ast[0]});
-                    //Log.v("MyActivity", "I GOT PAST WRITE");
                     if(mmInStream != null)
                     {
-                        //avail = mmInStream.available();
                         bytes += mmInStream.read(buffer, bytes, 2);
                     }
-                    //Log.v("MyActivity", "I GOT PAST READ");
                     for(int i = begin; i < bytes; i++) {
                         if(buffer[i] == "#".getBytes()[0]) {
                             btHandler.obtainMessage(1, begin, i, buffer).sendToTarget();
-                            //Log.v("MyActivity", "I OBTAINED MESSAGE");
                             begin = i + 1;
                             if(i == bytes - 1) {
                                 bytes = 0;
@@ -318,12 +306,11 @@ public class MainActivity extends ActionBarActivity {
                             }
                         }
                     }
-                } catch (IOException e) { //temp, should be IOException
-                    Log.e("YOUR_APP_LOG_TAG", "I got an error", e);
+                } catch (IOException e) {
+                    Log.e("TAG", "I got an error", e);
                     break;
                 }
             }
-            //Log.v("MyActivity", "I GOT OUTSIDE OF CONNECTED RUN LOOP FOR SOME REASON");
         }
 
         public void write(byte[] bytes) {
